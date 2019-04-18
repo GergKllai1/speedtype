@@ -14,25 +14,26 @@ export class Words extends Component {
     startTime: 0,
     totalTime: 0,
     wordsCount: 0,
-    isTyping: false
+    isTyping: false,
+    allWords: [],
+    correctWords: []
   };
 
   componentDidMount() {
     const words = randomWords(3);
-    this.setState({ words: words });
+    this.setState({ words: words, allWords: words });
     window.addEventListener("webkitAnimationEnd", e => {
       this.removeWord(e);
+      console.log(this.state.words,this.state.allWords)
     });
     document.addEventListener("keydown", this.handleKeyDown);
   }
 
-  setNewWord = word => {
-    const newWord = randomWords(1);
+  resetAnimation = word => {
     let el = document.getElementById(word);
     el.classList.remove("wordsTransition");
     el.scrollBy(); /* trigger reflow */
     el.classList.add("wordsTransition");
-    return newWord;
   };
 
   removeWord = e => {
@@ -82,15 +83,18 @@ export class Words extends Component {
     const solution = this.state.letters.join("");
     const words = this.state.words.map(word => {
       if (word === solution) {
-        this.setNewWord(solution);
-        this.setState({
-          correctKeyStrokes: this.state.correctKeyStrokes + word.length,
-          totalTime: this.state.totalTime + Date.now() - this.state.startTime,
+        this.resetAnimation(solution);
+        let newWord = randomWords()
+        this.setState(prevState => ({
+          correctKeyStrokes: prevState.correctKeyStrokes + solution.length,
+          totalTime: prevState.totalTime + Date.now() - this.state.startTime,
           isTyping: false,
-          wordsCount: this.state.wordsCount + 1,
-          startTime: 0
-        });
-        return randomWords();
+          wordsCount: prevState.wordsCount + 1,
+          startTime: 0,
+          correctWords: prevState.correctWords.concat(solution),
+          allWords: prevState.allWords.concat(newWord)
+        }));
+        return newWord;
       } else {
         return word;
       }
@@ -108,17 +112,17 @@ export class Words extends Component {
         />
       );
     });
-
     return (
       <div className="mainContainer">
-        <div className='wordContainer'> {words}</div>
+        <div className="wordContainer"> {words}</div>
         {this.state.words.join().length <= 3 ? (
           <EndGame
-            totalKeyStrokes={this.state.totalKeyStrokes}
-            correctKeyStrokes={this.state.correctKeyStrokes}
-            startTime={this.state.startTime}
-            totalTime={this.state.totalTime}
-            wordsCount={this.state.wordsCount}
+            // totalKeyStrokes={this.state.totalKeyStrokes}
+            // correctKeyStrokes={this.state.correctKeyStrokes}
+            // startTime={this.state.startTime}
+            // totalTime={this.state.totalTime}
+            // wordsCount={this.state.wordsCount}
+            data = {{...this.state}}
           />
         ) : (
           <div className="inputField">{this.state.letters}</div>
