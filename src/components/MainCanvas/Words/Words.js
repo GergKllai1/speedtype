@@ -111,7 +111,7 @@ export class Words extends Component {
 
     return (
       <div className="mainContainer">
-        <div style={{ display: "flex" }}> {words}</div>
+        <div className='wordContainer'> {words}</div>
         {this.state.words.join().length <= 3 ? (
           <EndGame
             totalKeyStrokes={this.state.totalKeyStrokes}
