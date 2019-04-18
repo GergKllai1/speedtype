@@ -9,7 +9,8 @@ const Word = props => {
       className="wordsTransition"
       style={{
         padding: "10px 0px",
-        margin: "10px"
+        margin: "10px",
+        animationDuration: `${8 - props.difficulty}s`
       }}
     >
       {letters}

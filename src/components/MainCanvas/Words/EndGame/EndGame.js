@@ -28,11 +28,9 @@ const EndGame = props => {
       <h3>Correct words: {props.data.wordsCount}</h3>
       <h3>Total time: {props.data.totalTime} seconds</h3>
       <h3>
-        Typing speed:
-        {props.data.totalTime > 0
+        Typing speed: {props.data.totalTime > 0
           ? Math.round((props.data.wordsCount * 60) / props.data.totalTime)
-          : 0}
-        WPM
+          : 0} WPM
       </h3>
       <ul>{displayWords}</ul>
     </div>

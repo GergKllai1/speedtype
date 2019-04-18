@@ -1,10 +1,11 @@
 import randomWords from "random-words";
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Word from "./Word/Word";
-import Letter from "./Word/Letter";
+import Letter from "./Word/Letter/Letter";
 import "./Words.css";
 import EndGame from "./EndGame/EndGame";
 
+const DIFFICULTY_INDEX = 5;
 export class Words extends Component {
   state = {
     words: [],
@@ -16,7 +17,8 @@ export class Words extends Component {
     wordsCount: 0,
     isTyping: false,
     allWords: [],
-    correctWords: []
+    correctWords: [],
+    difficulty: 0
   };
 
   componentDidMount() {
@@ -24,7 +26,6 @@ export class Words extends Component {
     this.setState({ words: words, allWords: words });
     window.addEventListener("webkitAnimationEnd", e => {
       this.removeWord(e);
-      console.log(this.state.words,this.state.allWords)
     });
     document.addEventListener("keydown", this.handleKeyDown);
   }
@@ -34,6 +35,12 @@ export class Words extends Component {
     el.classList.remove("wordsTransition");
     el.scrollBy(); /* trigger reflow */
     el.classList.add("wordsTransition");
+  };
+
+  increaseDifficulty = () => {
+    if (this.state.allWords.length > this.state.difficulty * DIFFICULTY_INDEX) {
+      this.setState(prevState => ({ difficulty: prevState.difficulty + 1 }));
+    }
   };
 
   removeWord = e => {
@@ -84,7 +91,8 @@ export class Words extends Component {
     const words = this.state.words.map(word => {
       if (word === solution) {
         this.resetAnimation(solution);
-        let newWord = randomWords()
+        this.increaseDifficulty();
+        let newWord = randomWords();
         this.setState(prevState => ({
           correctKeyStrokes: prevState.correctKeyStrokes + solution.length,
           totalTime: prevState.totalTime + Date.now() - this.state.startTime,
@@ -106,6 +114,7 @@ export class Words extends Component {
     const words = this.state.words.map(word => {
       return (
         <Word
+          difficulty={this.state.difficulty}
           word={word}
           compareWords={this.compareWords}
           letter={this.state.letters}
@@ -114,18 +123,13 @@ export class Words extends Component {
     });
     return (
       <div className="mainContainer">
-        <div className="wordContainer"> {words}</div>
         {this.state.words.join().length <= 3 ? (
-          <EndGame
-            // totalKeyStrokes={this.state.totalKeyStrokes}
-            // correctKeyStrokes={this.state.correctKeyStrokes}
-            // startTime={this.state.startTime}
-            // totalTime={this.state.totalTime}
-            // wordsCount={this.state.wordsCount}
-            data = {{...this.state}}
-          />
+          <EndGame data={{ ...this.state }} />
         ) : (
-          <div className="inputField">{this.state.letters}</div>
+          <>
+            <div className="wordContainer"> {words}</div>
+            <div className="inputField">{this.state.letters}</div>
+          </>
         )}
       </div>
     );
