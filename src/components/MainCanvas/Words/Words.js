@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Word from "./Word/Word";
 import Letter from "./Word/Letter";
 import "./Words.css";
+import EndGame from "./EndGame/EndGame";
 
 export class Words extends Component {
   state = {
@@ -110,30 +111,18 @@ export class Words extends Component {
 
     return (
       <div className="mainContainer">
-        {this.state.words.join().length <= 3 && <h1>I work!</h1>}
         <div style={{ display: "flex" }}> {words}</div>
-        <div className="inputField">{this.state.letters}</div>
-        <h3>Total keystrokes: {this.state.totalKeyStrokes}</h3>
-        <h3>Correct KeyStrokes: {this.state.correctKeyStrokes}</h3>
-        <h3>
-          Accuracy:
-          {this.state.totalKeyStrokes > 0
-            ? Math.round(
-                (this.state.correctKeyStrokes * 100) /
-                  this.state.totalKeyStrokes
-              )
-            : 0}
-          %
-        </h3>
-        <h3>Correct words: {this.state.wordsCount}</h3>
-        <h3>Total time: {this.state.totalTime} seconds</h3>
-        <h3>
-          Typing speed:
-          {this.state.totalTime > 0
-            ? Math.round((this.state.wordsCount * 60) / this.state.totalTime)
-            : 0}{" "}
-          WPM
-        </h3>
+        {this.state.words.join().length <= 3 ? (
+          <EndGame
+            totalKeyStrokes={this.state.totalKeyStrokes}
+            correctKeyStrokes={this.state.correctKeyStrokes}
+            startTime={this.state.startTime}
+            totalTime={this.state.totalTime}
+            wordsCount={this.state.wordsCount}
+          />
+        ) : (
+          <div className="inputField">{this.state.letters}</div>
+        )}
       </div>
     );
   }

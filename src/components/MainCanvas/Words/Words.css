@@ -9,8 +9,7 @@
     text-align: center;
     width: 10vw;
     height: 3vh;
-    border: 1px solid black;
-    border-radius: 10px;
+    border-bottom: 1px solid black;
     margin-top: 40vh;
 
 }
